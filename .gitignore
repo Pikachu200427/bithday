@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build output (if added later)
+dist/
+build/
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Keep asset placeholders but not actual personal media
+# Uncomment these lines if you do NOT want to commit photos to git:
+# assets/images/*.jpg
+# assets/images/*.jpeg
+# assets/images/*.png
+# assets/images/*.webp
+# assets/music/*.mp3

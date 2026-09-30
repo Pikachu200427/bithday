@@ -1,0 +1,8 @@
+# Place your MP3 music file here.
+# Rename it to: our-song.mp3
+# 
+# Alternatively, update the path in js/config.js:
+#   music: "/assets/music/your-filename.mp3",
+#
+# The music button (🎵) in the bottom-right corner controls playback.
+# Music does NOT autoplay — browsers block this. She must tap the button.

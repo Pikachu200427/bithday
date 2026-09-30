@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A handcrafted birthday surprise made with love, just for you.">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Happy Birthday ❤️</title>
+
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════════════════════════
+     LOADING SCREEN
+═══════════════════════════════════════════════════════════ -->
+    <div id="loading-screen" role="status" aria-label="Loading...">
+        <span class="loading-heart" aria-hidden="true">❤️</span>
+        <div class="loading-bar-wrap">
+            <div id="loading-bar" class="loading-bar"></div>
+        </div>
+        <p class="loading-text">preparing something special...</p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+     CUSTOM CURSOR
+═══════════════════════════════════════════════════════════ -->
+    <div id="cursor-dot" aria-hidden="true"></div>
+    <div id="cursor-ring" aria-hidden="true"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+     GLOBAL PARTICLE CANVAS
+═══════════════════════════════════════════════════════════ -->
+    <canvas id="particles-canvas" aria-hidden="true"></canvas>
+
+    <!-- ═══════════════════════════════════════════════════════════
+     AUDIO
+═══════════════════════════════════════════════════════════ -->
+    <audio id="bg-audio" preload="none" aria-hidden="true"></audio>
+
+    <!-- ═══════════════════════════════════════════════════════════
+     MUSIC TOGGLE BUTTON
+═══════════════════════════════════════════════════════════ -->
+    <button id="music-btn" aria-label="Toggle background music">
+        <!-- Note icon (shown when paused) -->
+        <svg class="music-icon-note" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+        </svg>
+        <!-- Equalizer (shown when playing) -->
+        <div class="equalizer music-icon-eq" style="display:none" aria-hidden="true">
+            <div class="equalizer-bar"></div>
+            <div class="equalizer-bar"></div>
+            <div class="equalizer-bar"></div>
+            <div class="equalizer-bar"></div>
+        </div>
+    </button>
+
+    <!-- ═══════════════════════════════════════════════════════════
+     LIGHTBOX
+═══════════════════════════════════════════════════════════ -->
+    <div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+        <div class="lightbox-content">
+            <button id="lightbox-close" class="lightbox-close" aria-label="Close photo viewer">✕</button>
+            <img id="lightbox-img" class="lightbox-img" src="" alt="">
+            <p id="lightbox-caption" class="lightbox-caption"></p>
+            <span id="lightbox-date" class="lightbox-date"></span>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+     BIRTHDAY MODE OVERLAY
+     (shown automatically on 27 October 2026)
+═══════════════════════════════════════════════════════════ -->
+    <div id="birthday-overlay" aria-live="polite" aria-label="Birthday celebration">
+        <canvas id="birthday-canvas" aria-hidden="true"></canvas>
+
+        <!-- Step 1: Stars appear — done via canvas -->
+        <div id="bday-step-1" class="bday-step">
+            <p class="bday-today">Today is different...</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div id="bday-step-2" class="bday-step">
+            <p class="bday-today">Because today...</p>
+        </div>
+
+        <!-- Step 3: Big reveal -->
+        <div id="bday-step-3" class="bday-step">
+            <h1 class="bday-reveal-title">It's Your Day ❤️</h1>
+        </div>
+
+        <!-- Step 4: Name reveal -->
+        <div id="bday-step-4" class="bday-step">
+            <h2 id="bday-name" class="bday-name-title">Happy Birthday</h2>
+        </div>
+
+        <!-- Step 5: Cake -->
+        <div id="bday-step-5" class="bday-step">
+            <div class="cake-container">
+                <span id="bday-cake" class="birthday-cake" role="button" tabindex="0"
+                    aria-label="Click to blow out the candles">🎂</span>
+                <p class="bday-wish" id="bday-wish">Make a wish... ✨</p>
+            </div>
+        </div>
+
+        <button id="skip-bday" class="skip-bday-btn" style="opacity:0" aria-label="Skip birthday animation">
+            Continue ↓
+        </button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+     HERO SECTION
+═══════════════════════════════════════════════════════════ -->
+    <section id="hero" aria-label="Welcome">
+        <div class="hero-bg-glow" aria-hidden="true"></div>
+        <div id="hero-stars" aria-hidden="true"></div>
+
+        <div class="hero-content">
+            <p id="hero-pre" class="hero-pre"></p>
+
+            <p id="hero-msg" class="hero-sub"></p>
+
+            <h1 id="hero-name" class="hero-name" aria-label="Her name"></h1>
+
+            <p id="hero-tag" class="hero-tagline">A little surprise, made with love.</p>
+
+            <button id="hero-btn" class="hero-btn" aria-label="Open the birthday surprise">
+                Open Your Surprise
+                <span class="hero-btn-heart" aria-hidden="true">❤️</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+     MAIN CONTENT (revealed after hero)
+═══════════════════════════════════════════════════════════ -->
+    <main id="main-content" aria-label="Birthday surprise content">
+
+        <!-- ── OCTOBER / COUNTDOWN ─────────────────────────── -->
+        <section id="october" class="section" aria-labelledby="october-heading">
+            <div class="container" style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+
+                <p class="october-intro">
+                    There are <span class="highlight">31 days</span> in October...
+                </p>
+                <p class="october-intro" style="margin-top:0.5rem;">
+                    ...but one of them has always felt a little more special to me.
+                </p>
+
+                <div class="gold-line"></div>
+
+                <h2 id="october-heading" class="october-date">27 OCTOBER 2026</h2>
+
+                <!-- Countdown -->
+                <div id="countdown-wrapper" class="countdown-wrapper" aria-label="Countdown to birthday">
+                    <div class="countdown-item">
+                        <span id="cd-days" class="countdown-number">00</span>
+                        <span class="countdown-label">Days</span>
+                    </div>
+                    <span class="countdown-divider" aria-hidden="true">:</span>
+                    <div class="countdown-item">
+                        <span id="cd-hours" class="countdown-number">00</span>
+                        <span class="countdown-label">Hours</span>
+                    </div>
+                    <span class="countdown-divider" aria-hidden="true">:</span>
+                    <div class="countdown-item">
+                        <span id="cd-minutes" class="countdown-number">00</span>
+                        <span class="countdown-label">Minutes</span>
+                    </div>
+                    <span class="countdown-divider" aria-hidden="true">:</span>
+                    <div class="countdown-item">
+                        <span id="cd-seconds" class="countdown-number">00</span>
+                        <span class="countdown-label">Seconds</span>
+                    </div>
+                </div>
+
+                <!-- Shown when birthday has arrived -->
+                <p id="birthday-arrived" class="birthday-arrived" style="display:none" aria-live="polite">
+                    Today is your day. ❤️
+                </p>
+
+            </div>
+        </section>
+
+        <!-- ── OUR STORY ───────────────────────────────────── -->
+        <section id="our-story" class="section" aria-labelledby="story-heading">
+            <div class="section-bg-text" aria-hidden="true">Story</div>
+            <div class="container section-content">
+                <p class="section-subtitle">the beginning of us</p>
+                <h2 id="story-heading" class="section-title">Every Story Has a Beginning...</h2>
+                <div class="gold-line"></div>
+
+                <!-- Story entries populated by JS from config -->
+                <div id="story-entries" style="margin-top:clamp(40px,7vh,90px)">
+                    <!-- populated by script.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ── MEMORY GALLERY ──────────────────────────────── -->
+        <section id="gallery" class="section" aria-labelledby="gallery-heading">
+            <div class="section-bg-text" aria-hidden="true">Us</div>
+            <div class="container section-content">
+                <p class="section-subtitle">little moments, big memories</p>
+                <h2 id="gallery-heading" class="section-title">Little Moments, Big Memories</h2>
+                <div class="gold-line"></div>
+
+                <!-- Gallery grid populated by JS -->
+                <div id="gallery-grid" class="gallery-grid" style="margin-top:clamp(40px,6vh,80px)" role="list"
+                    aria-label="Photo memories">
+                    <!-- populated by script.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ── THINGS I LOVE ABOUT YOU ─────────────────────── -->
+        <section id="love-cards" class="section" aria-labelledby="love-heading">
+            <div class="section-bg-text" aria-hidden="true">Love</div>
+            <div class="container section-content">
+                <p class="section-subtitle">a few of many things</p>
+                <h2 id="love-heading" class="section-title">A Few Things I Love About You</h2>
+                <div class="gold-line"></div>
+
+                <!-- Cards populated by JS -->
+                <div id="love-cards-grid" class="love-cards-grid">
+                    <!-- populated by script.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ── TIMELINE ────────────────────────────────────── -->
+        <section id="timeline" class="section" aria-labelledby="timeline-heading">
+            <div class="section-bg-text" aria-hidden="true">Time</div>
+            <div class="container section-content">
+                <p class="section-subtitle">moments that matter</p>
+                <h2 id="timeline-heading" class="section-title">Our Little Timeline</h2>
+                <div class="gold-line"></div>
+
+                <div class="timeline-container" style="margin-top:clamp(40px,7vh,90px)">
+                    <!-- Animated timeline line -->
+                    <div class="timeline-line" aria-hidden="true"></div>
+                    <div class="timeline-line-progress" aria-hidden="true"></div>
+
+                    <!-- Timeline items populated by JS -->
+                    <div id="timeline-items">
+                        <!-- populated by script.js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── LOVE LETTER ─────────────────────────────────── -->
+        <section id="love-letter" class="section" aria-labelledby="letter-heading">
+            <div class="section-bg-text" aria-hidden="true">Letter</div>
+            <div class="container section-content" style="display:flex;flex-direction:column;align-items:center;">
+                <p class="section-subtitle">from me to you</p>
+                <h2 id="letter-heading" class="section-title">A Letter For You</h2>
+                <div class="gold-line"></div>
+
+                <div class="envelope-container" style="margin-top:clamp(40px,6vh,80px)">
+                    <div class="envelope" role="article" aria-label="Love letter envelope">
+
+                        <!-- Envelope body -->
+                        <div class="envelope-body">
+                            <div class="envelope-flap" aria-hidden="true"></div>
+                            <div class="envelope-bottom-left" aria-hidden="true"></div>
+                            <div class="envelope-bottom-right" aria-hidden="true"></div>
+                            <div class="envelope-seal" aria-hidden="true">💌</div>
+
+                            <!-- Letter slides out of envelope -->
+                            <div class="letter-wrapper" aria-label="Love letter contents">
+                                <div class="letter-paper">
+                                    <span id="letter-greeting" class="letter-greeting"></span>
+                                    <div id="letter-body" class="letter-body">
+                                        <!-- populated by script.js -->
+                                    </div>
+                                    <span id="letter-closing" class="letter-closing"></span>
+                                    <span id="letter-sig" class="letter-sig"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="envelope-hint">
+                            <em>Scroll to open...</em>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── SECRET SURPRISE ─────────────────────────────── -->
+        <section id="secret" class="section" aria-labelledby="secret-heading">
+            <div class="container section-content" style="text-align:center;">
+                <div class="gold-dot"></div>
+                <p class="section-subtitle" style="margin-top:2rem;">one more thing</p>
+                <h2 id="secret-heading" class="section-title">I Still Have One More Thing to Tell You...</h2>
+                <div class="gold-line"></div>
+
+                <p class="secret-reveal-text" style="margin-top:2rem;">
+                    There's a little something I kept just for the end.
+                </p>
+
+                <button id="secret-reveal-btn" class="secret-btn" aria-label="Reveal secret message">
+                    One More Thing 💌
+                </button>
+
+                <div id="secret-message-box" class="secret-message-box" role="region" aria-label="Secret message">
+                    <p id="secret-message-text" class="secret-message-text">
+                        <!-- populated by script.js -->
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── FINAL MESSAGE ───────────────────────────────── -->
+        <section id="final-message" class="section" aria-labelledby="final-msg-heading">
+            <div class="container section-content">
+                <p class="section-subtitle">from the heart</p>
+                <h2 id="final-msg-heading" class="section-title">One Last Thing...</h2>
+                <div class="gold-line"></div>
+
+                <div class="final-message-content" style="margin-top:clamp(40px,6vh,80px)">
+                    <!-- Lines populated by script.js -->
+                    <div id="final-message-lines"
+                        style="display:flex;flex-direction:column;gap:0.4rem;align-items:center;text-align:center;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── FINAL SCREEN ────────────────────────────────── -->
+        <section id="final-screen" class="section" aria-label="Final farewell">
+            <div class="container" style="display:flex;flex-direction:column;align-items:center;text-align:center;">
+                <p class="final-made-with">Made with love, just for you.</p>
+                <span class="final-heart" aria-label="Heart" role="img">❤️</span>
+                <p id="final-names" class="final-names">Sujju × Sallo</p>
+            </div>
+        </section>
+
+    </main><!-- #main-content -->
+
+    <!-- ═══════════════════════════════════════════════════════════
+     SCRIPTS
+     CDN-loaded: GSAP, ScrollTrigger, Lenis
+═══════════════════════════════════════════════════════════ -->
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- Lenis smooth scroll -->
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+    <!-- Config (must come before script.js) -->
+    <script src="js/config.js"></script>
+
+    <!-- Main script -->
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>
